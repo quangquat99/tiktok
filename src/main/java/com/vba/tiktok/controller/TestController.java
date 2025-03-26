@@ -20,8 +20,10 @@ public class TestController {
     @Autowired
     TikTokUploadService tikTokUploadService;
 
-    private final String CLIENT_KEY = "sbawh5jwr50tttl4l9";
-    private final String CLIENT_SECRET = "CbFAl4j7LMgJvtrLxuvIOqfr99t9bNUC";
+//    private final String CLIENT_KEY = "sbawh5jwr50tttl4l9";
+//    private final String CLIENT_SECRET = "CbFAl4j7LMgJvtrLxuvIOqfr99t9bNUC";
+    private final String CLIENT_KEY = "sbaw2n3ny5jk1knzha";
+    private final String CLIENT_SECRET = "ibNWbzjKuFlpSiIkGyIpBDmwPekPfmGK";
     private final String REDIRECT_URI = "https://dzew7cvh3rahv.cloudfront.net/callback";
 
     @GetMapping
@@ -57,8 +59,29 @@ public class TestController {
         return ResponseEntity.ok(response.getBody());
     }
 
-    @PostMapping("tiktok/upload")
+    @PostMapping("tiktok/upload-video")
     public ResponseEntity<String> uploadVideo(@RequestParam("file") MultipartFile file, @RequestParam("accessToken") String accessToken) {
         return ResponseEntity.ok(tikTokUploadService.uploadVideo(file, accessToken));
+    }
+
+    @PostMapping("tiktok/upload-multiple-images")
+    public ResponseEntity<String> uploadMultipleImages(
+            @RequestParam("images") MultipartFile[] images,
+            @RequestParam("accessToken") String accessToken) {
+
+        String result = tikTokUploadService.uploadMultipleImages(images, accessToken);
+        return ResponseEntity.ok(result);
+    }
+
+    // 1️⃣ Query Creator Info
+    @PostMapping("tiktok/query-creator-info")
+    public ResponseEntity<String> queryCreatorInfo(@RequestParam("accessToken") String accessToken) {
+        try {
+            String response = tikTokUploadService.queryCreatorInfo(accessToken);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+        }
     }
 }
